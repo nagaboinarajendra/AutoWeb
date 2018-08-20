@@ -21,7 +21,7 @@ public class FileOperation {
      */
     public void writeToFile(ArrayList<Slot> queue) {
         try (BufferedWriter bw = new BufferedWriter (
-                new FileWriter("C:\\Users\\Rajendra_Nagaboina\\eclipse-workspace\\AutoParking\\src\\main\\resources\\Transaction.txt"))) {
+                new FileWriter("/Users/rajendra/Desktop/AutoWeb-master/src/main/resources/Transaction.txt"))) {
         for (Object line : queue) {
             bw.write(line + "\n");
         }
@@ -39,7 +39,7 @@ public class FileOperation {
      */
     public String ReadFromFile(ParkingSpace parkingSpace) throws IOException {
         String line = "";
-        BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\Rajendra_Nagaboina\\eclipse-workspace\\AutoParking\\src\\main\\resources\\Transaction.txt"));
+        BufferedReader br = new BufferedReader(new FileReader("/Users/rajendra/Desktop/AutoWeb-master/src/main/resources/Transaction.txt"));
         int lastSlot = 0;
         int[] temp = new int[parkingSpace.getTotalSlots()];
         while ((line = br.readLine()) != null) {
@@ -78,7 +78,7 @@ public class FileOperation {
      */
     public void writeToLogFile(Slot slot) {
     	try (BufferedWriter bw = new BufferedWriter(
-                new FileWriter("C:\\Users\\Rajendra_Nagaboina\\eclipse-workspace\\AutoParking\\src\\main\\resources\\Transaction.txt", true))) {
+                new FileWriter("/Users/rajendra/Desktop/AutoWeb-master/src/main/resources/LogFile.txt", true))) {
         Object line = slot;
         bw.write(line + "\n");
         bw.close();

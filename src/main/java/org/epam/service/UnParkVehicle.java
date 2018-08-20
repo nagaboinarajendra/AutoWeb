@@ -1,4 +1,5 @@
 package org.epam.service;
+import java.sql.SQLException;
 import java.util.Date;
 /**
  * @author rajendra
@@ -12,6 +13,8 @@ import org.epam.exceptions.CarNumberInvalidException;
 import org.epam.fileio.FileOperation;
 import org.epam.parking.ParkingSpace;
 import org.epam.parking.Slot;
+
+import com.parking.db.DBConnection;
 /**
  * unparks the vehicle.
  */
@@ -29,6 +32,8 @@ public class UnParkVehicle {
 		boolean isUnparked = false;
 		FileOperation addToLog = new FileOperation();
 		try {
+			DBConnection connect = new DBConnection();
+			connect.getConnection();
 		if (isCarNumberValid(carNumber)
 				&& isCarPresent(carNumber, parkingSpace)) {
 			parkingSpace.queue.remove(slotToRemove);
@@ -37,9 +42,10 @@ public class UnParkVehicle {
 			long diff = new Date().getTime() - Slot.intime[slotToRemove.getSlotNumber()].getInTime();
 			System.out.println("Unparked successfully! Car parked for duration of:" + duration(diff));
 			addToLog.writeToLogFile(slotToRemove);
+			connect.deleteFromDB(slotToRemove);
 			isUnparked = true;
 		}
-		} catch (CarNumberInvalidException message) {
+		} catch (CarNumberInvalidException | SQLException message) {
 			message.printStackTrace();
 		} catch (CarNotPresentException message) {
 			message.printStackTrace();

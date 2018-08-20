@@ -1,5 +1,6 @@
 package org.epam.parking;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 import org.epam.admin.Admin;
@@ -9,6 +10,8 @@ import org.epam.fileio.FileOperation;
 import org.epam.service.ParkVehicle;
 import org.epam.service.UnParkVehicle;
 import org.epam.vehicle.Car;
+
+import com.parking.db.DBConnection;
 /**
  * provides facitities to user.
  * @author rajendra
@@ -81,8 +84,17 @@ public class App {
     IOException {
         Slot.car = new Car[parkingSpace.getTotalSlots() + 1];
         Slot.intime = new InTime[parkingSpace.getTotalSlots() + 1];
-        FileOperation fo = new FileOperation();
-        fo.ReadFromFile(parkingSpace);
+        //FileOperation fo = new FileOperation();
+        //fo.ReadFromFile(parkingSpace);
+        DBConnection connect = new DBConnection(); 
+        connect.getConnection();
+        try {
+			connect.readOldTransactions(parkingSpace);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
     }
     /**
      * @param args

@@ -1,6 +1,8 @@
 package com.servlets.parking;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,27 +27,33 @@ public class Operation extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-	    res.setContentType("html");
-	    String choice = req.getParameter("choice");
-	    String carNumber = req.getParameter("carNumber");
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("html");
+	    String choice = request.getParameter("option");
+	    String carNumber = request.getParameter("registration");
 	    ParkVehicle park = new ParkVehicle();
 	    UnParkVehicle unpark = new UnParkVehicle();
 	    boolean isOperationDone = false;
-	    String message="";
-	    ParkingSpace parkingSpace = (ParkingSpace) req.getSession().getAttribute("parkigSpace");
-         if(choice.equals("parkVehicle")) {
+	    ParkingSpace parkingSpace = (ParkingSpace) request.getSession().getServletContext().getAttribute("parkingSpace");
+         if(choice.equals("park")) {
              isOperationDone =  park.parkCar(carNumber, parkingSpace);
-         } else if(choice.equals("unparkVehicle")) {
+             if(isOperationDone) {
+            	 request.setAttribute("message", "parked SuccessFully");
+             } else {
+            	 request.setAttribute("message", "Error while parking");
+             }
+         } else if(choice.equals("unpark")) {
         	 isOperationDone = unpark.unParkCar(carNumber, parkingSpace);
+        	 if(isOperationDone) {
+            	 request.setAttribute("message", "unparked SuccessFully");
+
+             } else {
+            	 request.setAttribute("message", "error while unparking");
+             }
          }
-         if(isOperationDone) {
-        	 message = "success";
-         } else {
-        	message = "failure"; 
-         }
-	    req.setAttribute("message", message);
-        req.getRequestDispatcher("/Menu.jsp").forward(req, res);
+         
+         //out.println(message);
+	    //req.setAttribute("message", message);
 	}
 
 }

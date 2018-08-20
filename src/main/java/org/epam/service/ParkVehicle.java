@@ -1,4 +1,5 @@
 package org.epam.service;
+import java.sql.SQLException;
 /**
  * @author rajendra
  */
@@ -9,6 +10,8 @@ import java.util.regex.Pattern;
 import org.epam.exceptions.CarNumberInvalidException;
 import org.epam.parking.ParkingSpace;
 import org.epam.parking.Slot;
+
+import com.parking.db.DBConnection;
 /**
  * parks the vehicle into parking space.
  */
@@ -23,24 +26,30 @@ public class ParkVehicle {
     public boolean parkCar(String carNumber, ParkingSpace parkingSpace) {
     	boolean isParked = false;
         try {
+        	DBConnection connect = new DBConnection();
+            connect.getConnection();
         if (isCarNumberValid(carNumber) &&
                 isCarNotPresent(carNumber, parkingSpace)) {
         if (!isEmptySlotsAvailable(parkingSpace)) {
             int emptySlot = parkingSpace.nextSlot.poll();
             Slot slot = new Slot(emptySlot, carNumber, new Date().getTime());
             parkingSpace.queue.add(slot);
+            connect.insertIntoDB(slot);
             isParked = true;
         } else {
             Slot slot = new Slot(parkingSpace.getNextSlotNumber(),
                     carNumber, new Date().getTime());
             parkingSpace.queue.add(slot);
             parkingSpace.setSlotNumber(parkingSpace.getNextSlotNumber() + 1);
+            connect.insertIntoDB(slot);
             isParked = true;
         }
         parkingSpace.updateSlotsRemaining(parkingSpace.getSlotsRemaining() - 1);
-        System.out.println("Parked successfully");
+        System.out.println("Parked successfully!!");
+        
+
         }
-        } catch (CarNumberInvalidException message) {
+        } catch (CarNumberInvalidException | SQLException message) {
             message.printStackTrace();
         }
         return isParked;
