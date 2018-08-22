@@ -6,11 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import org.epam.exceptions.InvalidAdminException;
 import org.epam.parking.ParkingSpace;
 import org.epam.parking.Slot;
- 
 public class DBConnection {
     public Connection conn = null;
     /**
@@ -33,8 +31,14 @@ public class DBConnection {
         }
         return null;
     }
-    
-    
+    /**
+     * 
+     * @param username
+     * @param password
+     * @return
+     * @throws InvalidAdminException
+     * @throws SQLException
+     */
     public boolean validateAdmin(String username, String password)
             throws InvalidAdminException, SQLException {
     	getConnection();
@@ -53,7 +57,11 @@ public class DBConnection {
     	}
         return isAdminValid;
     }
-    
+    /**
+     * 
+     * @param slot
+     * @throws SQLException
+     */
     public void insertIntoDB(Slot slot) throws SQLException {
     	String carnumber = Slot.car[slot.getSlotNumber()].getCarNumber();
     	int slotnumber = slot.getSlotNumber();
@@ -64,7 +72,11 @@ public class DBConnection {
     	pstmt.setLong(3, intime);
     	pstmt.executeUpdate();
     }
-    
+    /**
+     * 
+     * @param slot
+     * @throws SQLException
+     */
     public void deleteFromDB(Slot slot) throws SQLException {
     	String carnumber = Slot.car[slot.getSlotNumber()].getCarNumber();
     	String deleteSQL = "DELETE FROM slots WHERE carnumber = ?";
@@ -72,7 +84,11 @@ public class DBConnection {
     	preparedStatement.setString(1, carnumber);
     	preparedStatement.executeUpdate();
     }
-    
+    /**
+     * 
+     * @param parkingSpace
+     * @throws SQLException
+     */
     public void readOldTransactions(ParkingSpace parkingSpace) throws SQLException {
         int lastSlot = 0;
         int[] temp = new int[parkingSpace.getTotalSlots()];
